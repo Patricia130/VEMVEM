@@ -1,0 +1,44 @@
+workflows:
+  android-native-release:
+    name: Build Android Native Release
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+
+    environment:
+      vars:
+        JAVA_VERSION: 17
+
+    scripts:
+      - name: Configurar Java 17
+        script: |
+          export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+          export PATH=$JAVA_HOME/bin:$PATH
+          echo "✅ Usando Java 17 em $JAVA_HOME"
+
+      - name: Dar permissão ao gradlew
+        script: |
+          chmod +x ./gradlew
+          echo "✅ Permissão concedida ao gradlew"
+
+      - name: Limpar projeto
+        script: |
+          ./gradlew clean
+          echo "🧹 Projeto limpo com sucesso"
+
+      - name: Compilar APK e AAB de release
+        script: |
+          ./gradlew assembleRelease
+          ./gradlew bundleRelease
+          echo "📦 Builds .apk e .aab gerados com sucesso"
+
+    artifacts:
+      - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
+
+    publishing:
+      email:
+        recipients:
+          - seuemail@dominio.com
+        notify:
+          success: true
+          failure: true
