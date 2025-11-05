@@ -31,6 +31,13 @@ workflows:
           ./gradlew bundleRelease
           echo "📦 Builds .apk e .aab gerados com sucesso"
 
+      - name: Listar arquivos gerados
+        script: |
+          echo "📂 Listando APKs gerados:"
+          find app/build/outputs -name "*.apk" || echo "❌ Nenhum APK encontrado"
+          echo "📂 Listando AABs gerados:"
+          find app/build/outputs -name "*.aab" || echo "❌ Nenhum AAB encontrado"
+
     artifacts:
       - app/build/outputs/**/*.apk
       - app/build/outputs/**/*.aab
